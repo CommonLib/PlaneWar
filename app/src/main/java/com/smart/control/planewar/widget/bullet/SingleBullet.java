@@ -1,6 +1,7 @@
 package com.smart.control.planewar.widget.bullet;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.smart.control.planewar.Config;
@@ -15,6 +16,10 @@ public class SingleBullet extends Bullet {
     public SingleBullet(Context context){
         super(context);
         mSpeed = Config.BULLET_SPEED_SLOW;
-        mStyleBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.yellow_bullet);
+    }
+
+    @Override
+    protected Bitmap getElementIcon() {
+        return BitmapFactory.decodeResource(getResources(), R.mipmap.yellow_bullet);
     }
 }

@@ -32,8 +32,6 @@ public abstract class Element extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mStyleBitmap.getWidth(),mStyleBitmap.getHeight());
-        mWidth = getMeasuredWidth();
-        mHeight = getMeasuredHeight();
     }
 
     @Override
@@ -43,12 +41,12 @@ public abstract class Element extends View {
 
     protected void init(){
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mLocationX = getLeft();
-                mLocationY = getTop();
-            }
-        });
+        mLocationX = 0;
+        mLocationY = 0;
+        mStyleBitmap = getElementIcon();
+        mWidth = mStyleBitmap.getWidth();
+        mHeight = mStyleBitmap.getHeight();
     }
+
+    protected abstract Bitmap getElementIcon();
 }

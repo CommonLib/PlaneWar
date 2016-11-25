@@ -2,14 +2,12 @@ package com.smart.control.planewar.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.smart.control.planewar.BulletQueue;
-import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.plane.FightPlane;
 
 /**
@@ -66,54 +64,8 @@ public class GameView extends FrameLayout {
         return params;
     }
 
-    /**
-     * 让一个战机发射子弹
-     */
-    public void shootBullet(FightPlane targetPlane) {
-        shootBullet(targetPlane, targetPlane.mBullet);
-    }
-
     public FightPlane getFightPlane() {
         return mFightPlane;
-    }
-
-    /**
-     * 让一个战机发射子弹
-     */
-    public void shootBullet(FightPlane targetPlane, Bullet bullet) {
-        //获取当前战机的位置，在当前位置发射子弹
-        targetPlane.setBullet(bullet);
-        Bullet benchFiredBullet = mBulletQueue.getBenchFiredBullet();
-        Bullet fireBullet = null;
-        if (benchFiredBullet != null) {
-            fireBullet = targetPlane.shootBullet(benchFiredBullet);
-            Log.d("game", "缓存的子弹");
-        } else {
-            fireBullet = targetPlane.shootBullet();
-            Log.d("game", "新子弹");
-            addView(fireBullet);
-        }
-        mBulletQueue.add(fireBullet);
-        fireBullet.setVisibility(INVISIBLE);
-        fireBullet.startLaunch();
-        fireBullet.setBulletFlyListener(new Bullet.onBulletFlyListener() {
-            @Override
-            public void onBulletStartFly(Bullet bullet) {
-                bullet.setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onBulletFly(Bullet bullet, int originX, int targetX, int originY, int targetY, int currentX, int currentY) {
-                //判断是否击中，如果击中则从正在飞行的集合中拿出，放入备用集合中
-            }
-
-            @Override
-            public void onBulletFlyEnd(Bullet bullet) {
-                bullet.setVisibility(INVISIBLE);
-                mBulletQueue.remove(bullet);
-                mBulletQueue.addFiredBullet(bullet);
-            }
-        });
     }
 
 

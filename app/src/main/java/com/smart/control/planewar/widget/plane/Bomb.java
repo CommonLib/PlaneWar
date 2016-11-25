@@ -1,6 +1,7 @@
 package com.smart.control.planewar.widget.plane;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.smart.control.planewar.R;
@@ -17,8 +18,7 @@ public class Bomb extends Element{
     }
 
     @Override
-    protected void init() {
-        super.init();
-        mStyleBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.bomb_award);
+    protected Bitmap getElementIcon() {
+        return BitmapFactory.decodeResource(getResources(), R.mipmap.bomb_award);
     }
 }

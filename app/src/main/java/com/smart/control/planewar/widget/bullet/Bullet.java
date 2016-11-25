@@ -1,9 +1,10 @@
 package com.smart.control.planewar.widget.bullet;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 
+import com.smart.control.planewar.Config;
+import com.smart.control.planewar.ControlRunnable;
+import com.smart.control.planewar.OperateCalculateManager;
 import com.smart.control.planewar.widget.Element;
 
 /**
@@ -11,94 +12,35 @@ import com.smart.control.planewar.widget.Element;
  * 描述:
  * 修改:
  */
-public abstract class Bullet extends Element implements Cloneable {
+public abstract class Bullet extends Element {
     public int mSpeed;
     public int mOriginX;
     public int mOriginY;
     public int mTargetX;
     public int mTargetY;
-    public int mCurrentX;
-    public int mCurrentY;
-    public int refreshInterval;
-    public onBulletFlyListener mBulletFlyListener;
-    private boolean mIsAdd;
-
-    public void setBulletFlyListener(onBulletFlyListener bulletFlyListener) {
-        mBulletFlyListener = bulletFlyListener;
-    }
 
     public Bullet(Context context) {
         super(context);
     }
 
     @Override
-    public Bullet clone() {
-        Bullet clone = null;
-        try {
-            clone = (Bullet) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("copy bullet failure");
-        }
-        clone.mStyleBitmap = this.mStyleBitmap;
-        return clone;
+    protected void init() {
+        super.init();
     }
 
-    public void startLaunch() {
-        ValueAnimator launchAnimatorY = ValueAnimator.ofFloat(mOriginY, mTargetY);
-        launchAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    public void fireBullet(int startX, int startY, final int speed) {
+        mOriginX = startX;
+        mOriginY = startY;
+        mLocationX = mOriginX;
+        mLocationY = mOriginY;
+        mSpeed = speed;
+        //将初始化数据，和子弹，交给数据处理系统处理数据
+        OperateCalculateManager.getInstance().calculate(new ControlRunnable() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                if (mBulletFlyListener != null) {
-                    mBulletFlyListener.onBulletFly(Bullet.this, mOriginX, mTargetX, mOriginY, mTargetY, mOriginX, (int) value);
-                }
-                //[0,-value]
-                mCurrentY = (int) value;
-                mCurrentX = mOriginX;
-                setTop((int) value);
+            public void run() {
+                mLocationY = mLocationY - speed * Config.DATA_INTERVAL_REFRESH;
             }
         });
-
-        launchAnimatorY.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                if (mBulletFlyListener != null) {
-                    mBulletFlyListener.onBulletStartFly(Bullet.this);
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mBulletFlyListener != null) {
-                    mBulletFlyListener.onBulletFlyEnd(Bullet.this);
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        launchAnimatorY.setDuration(mSpeed);
-        launchAnimatorY.start();
     }
 
-    public interface onBulletFlyListener {
-        void onBulletStartFly(Bullet bullet);
-
-        void onBulletFly(Bullet bullet, int originX, int targetX, int originY, int targetY, int currentX, int currentY);
-
-        void onBulletFlyEnd(Bullet bullet);
-    }
-
-    @Override
-    public void layout(int l, int t, int r, int b) {
-        super.layout(mCurrentX, mCurrentY, mCurrentX + mWidth, mCurrentY + mHeight);
-    }
 }

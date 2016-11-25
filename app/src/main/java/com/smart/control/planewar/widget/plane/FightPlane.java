@@ -1,10 +1,12 @@
 package com.smart.control.planewar.widget.plane;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.smart.control.planewar.Config;
 import com.smart.control.planewar.R;
+import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.bullet.SingleBullet;
 
@@ -25,11 +27,15 @@ public class FightPlane extends Plane {
     @Override
     public void init() {
         super.init();
-        mStyleBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.plane);
         mSpeed = 0;
         mLifeLeft = 1;
         mBullet = new SingleBullet(getContext());
         attackInterval = Config.SPEED_MIDDLE;
+    }
+
+    @Override
+    protected Bitmap getElementIcon() {
+        return BitmapFactory.decodeResource(getResources(), R.mipmap.plane);
     }
 
     /**
@@ -37,8 +43,7 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
-        Bullet bullet = mBullet.clone();
-        return shootBullet(bullet);
+        return shootBullet(mBullet);
     }
 
     /**
@@ -46,12 +51,11 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet(Bullet bullet) {
         //获取当前战机的位置，在当前位置发射子弹
-        bullet.mOriginX = (int) (mLocationX + mWidth * 0.5f);
-        bullet.mOriginY = mLocationY - bullet.mHeight;
-        bullet.mTargetX = bullet.mOriginX;
-        bullet.mTargetY = 0;
-        bullet.mCurrentX = bullet.mOriginX;
-        bullet.mCurrentY = bullet.mOriginY;
+        int originX = (int) (mLocationX + mWidth * 0.5f);
+        int originY = mLocationY - bullet.mHeight;
+        bullet.fireBullet(originX, originY, Config.BULLET_SPEED_SLOW);
+        //告诉View 要刷新我的子弹
+        ViewDrawManager.getInstance().drawElement(bullet);
         return bullet;
     }
 
@@ -67,7 +71,7 @@ public class FightPlane extends Plane {
     public void layout(int l, int t, int r, int b) {
         if (mFirstLayout) {
             super.layout(l, t, r, b);
-            mFirstLayout  = false;
+            mFirstLayout = false;
         }
     }
 }
