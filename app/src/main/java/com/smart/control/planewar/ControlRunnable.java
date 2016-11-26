@@ -5,7 +5,7 @@ package com.smart.control.planewar;
  */
 
 public abstract class ControlRunnable implements Runnable{
-    public boolean isGoOn;
+    public boolean isGoOn = true;
     public void setGoOn(boolean isGoOn){
         this.isGoOn = isGoOn;
     }

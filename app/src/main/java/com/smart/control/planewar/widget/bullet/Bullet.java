@@ -2,9 +2,9 @@ package com.smart.control.planewar.widget.bullet;
 
 import android.content.Context;
 
-import com.smart.control.planewar.Config;
 import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.OperateCalculateManager;
+import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.Element;
 
 /**
@@ -38,7 +38,11 @@ public abstract class Bullet extends Element {
         OperateCalculateManager.getInstance().calculate(new ControlRunnable() {
             @Override
             public void run() {
-                mLocationY = mLocationY - speed * Config.DATA_INTERVAL_REFRESH;
+                mLocationY = mLocationY - 100;
+                if (mLocationY <= 0) {
+                    setGoOn(false);
+                    ViewDrawManager.getInstance().removeElememt(Bullet.this);
+                }
             }
         });
     }

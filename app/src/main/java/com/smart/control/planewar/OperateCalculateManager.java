@@ -36,7 +36,7 @@ public class OperateCalculateManager {
             public void run() {
                 runnable.run();
                 if(runnable.isGoOn){
-                    mCalculateHandler.postDelayed(this, 15);
+                    mCalculateHandler.postDelayed(this, Config.DATA_INTERVAL_REFRESH);
                 }
             }
         };

@@ -3,8 +3,10 @@ package com.smart.control.planewar.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.widget.FrameLayout;
+import android.os.SystemClock;
+import android.view.View;
 
+import com.smart.control.planewar.Config;
 import com.smart.control.planewar.ViewDrawManager;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  * 存在子弹 敌机 弹药，根据他们的坐标进行绘制 67帧 每15ms刷新一次数据
  */
 
-public class BattleFieldView extends FrameLayout {
+public class BattleFieldView extends View {
 
     private final Paint mPaint;
 
@@ -32,6 +34,7 @@ public class BattleFieldView extends FrameLayout {
             canvas.drawBitmap(element.getElementIcon(), element.mLocationX, element.mLocationY,
                     mPaint);
         }
+        SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
         invalidate();
     }
 }

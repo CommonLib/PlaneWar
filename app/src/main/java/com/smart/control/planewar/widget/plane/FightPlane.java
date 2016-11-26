@@ -29,8 +29,14 @@ public class FightPlane extends Plane {
         super.init();
         mSpeed = 0;
         mLifeLeft = 1;
-        mBullet = new SingleBullet(getContext());
         attackInterval = Config.SPEED_MIDDLE;
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mLocationX = getLeft();
+                mLocationY = getTop();
+            }
+        });
     }
 
     @Override
@@ -43,6 +49,7 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
+        mBullet = new SingleBullet(getContext());
         return shootBullet(mBullet);
     }
 
