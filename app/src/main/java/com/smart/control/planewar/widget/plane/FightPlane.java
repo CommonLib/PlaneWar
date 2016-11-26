@@ -10,15 +10,18 @@ import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.bullet.SingleBullet;
 
+import java.util.LinkedList;
+
 /**
  * @author:dongpo 创建时间: 9/13/2016
  * 描述:战斗机
  * 修改:
  */
 public class FightPlane extends Plane {
-    public Bullet mBullet;
+    public LinkedList<Bullet> mBulletQueue;
     public int attackInterval;
     private boolean mFirstLayout = true;
+    private Bullet mBullet;
 
     public FightPlane(Context context) {
         super(context);
@@ -30,6 +33,7 @@ public class FightPlane extends Plane {
         mSpeed = 0;
         mLifeLeft = 1;
         attackInterval = Config.SPEED_MIDDLE;
+        mBulletQueue = new LinkedList<>();
         post(new Runnable() {
             @Override
             public void run() {
@@ -49,7 +53,14 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
-        mBullet = new SingleBullet(getContext());
+        Bullet bullet = mBulletQueue.pollLast();
+        if(bullet!= null && bullet.isOutOfScreen){
+            bullet.isOutOfScreen = false;
+            mBullet = bullet;
+        }else{
+            mBullet = new SingleBullet(getContext());
+            mBulletQueue.addFirst(mBullet);
+        }
         return shootBullet(mBullet);
     }
 

@@ -16,6 +16,7 @@ public abstract class Bullet extends Element {
     public int mSpeed;
     public int mOriginX;
     public int mOriginY;
+    public boolean isOutOfScreen = false;
     public int mTargetX;
     public int mTargetY;
 
@@ -38,10 +39,11 @@ public abstract class Bullet extends Element {
         OperateCalculateManager.getInstance().calculate(new ControlRunnable() {
             @Override
             public void run() {
-                mLocationY = mLocationY - 100;
+                mLocationY = mLocationY - 15;
                 if (mLocationY <= 0) {
                     setGoOn(false);
                     ViewDrawManager.getInstance().removeElememt(Bullet.this);
+                    isOutOfScreen = true;
                 }
             }
         });

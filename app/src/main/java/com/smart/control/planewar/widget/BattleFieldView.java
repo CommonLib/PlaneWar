@@ -31,7 +31,8 @@ public class BattleFieldView extends View {
         ArrayList<Element> elements = ViewDrawManager.getInstance().getElements();
         for (int i = 0; i < elements.size(); i++) {
             Element element = elements.get(i);
-            canvas.drawBitmap(element.getElementIcon(), element.mLocationX, element.mLocationY,
+            //bug ui and data always read data, sync thread issue.
+            canvas.drawBitmap(element.mStyleBitmap, element.mLocationX, element.mLocationY,
                     mPaint);
         }
         SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);

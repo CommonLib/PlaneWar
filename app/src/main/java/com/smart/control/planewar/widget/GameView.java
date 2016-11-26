@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.smart.control.planewar.BulletQueue;
 import com.smart.control.planewar.widget.plane.FightPlane;
 
 /**
@@ -22,7 +21,6 @@ public class GameView extends FrameLayout {
     private int mFightPlaneVerticalRange;
     private int mParentWidth;
     private int mParentHeight;
-    private BulletQueue mBulletQueue;
     private float mLastX;
     private float mLastY;
     private BattleFieldView mBattleFieldView;
@@ -34,7 +32,6 @@ public class GameView extends FrameLayout {
     }
 
     private void init() {
-        mBulletQueue = new BulletQueue();
         //初始化飞机
         mFightPlane = new FightPlane(getContext());
         addView(mFightPlane, getFightInitParams());
