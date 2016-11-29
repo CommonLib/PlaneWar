@@ -14,8 +14,8 @@ import android.view.View;
  */
 public abstract class Element extends View {
     public Bitmap mStyleBitmap;
-    public int mLocationX;
-    public int mLocationY;
+    public float mLocationX;
+    public float mLocationY;
     public int mWidth;
     public int mHeight;
     public Paint mPaint;

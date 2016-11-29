@@ -10,6 +10,7 @@ import com.smart.control.planewar.Config;
 import com.smart.control.planewar.ViewDrawManager;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by byang059 on 11/24/16.
@@ -19,10 +20,12 @@ import java.util.ArrayList;
 public class BattleFieldView extends View {
 
     private final Paint mPaint;
+    private final Random mRandom;
 
     public BattleFieldView(Context context) {
         super(context);
         mPaint = new Paint();
+        mRandom = new Random(10);
     }
 
     @Override
@@ -37,5 +40,26 @@ public class BattleFieldView extends View {
         }
         SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
         invalidate();
+    }
+
+    public void refreshEnemy(){
+        //根据随机数刷新敌机
+        int type = mRandom.nextInt();
+        switch (type){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                break;
+            case 6:
+            case 7:
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
+                break;
+        }
     }
 }

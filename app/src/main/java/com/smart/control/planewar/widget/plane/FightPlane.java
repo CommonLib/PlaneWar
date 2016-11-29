@@ -69,9 +69,9 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet(Bullet bullet) {
         //获取当前战机的位置，在当前位置发射子弹
-        int originX = (int) (mLocationX + mWidth * 0.5f);
-        int originY = mLocationY - bullet.mHeight;
-        bullet.fireBullet(originX, originY, Config.BULLET_SPEED_SLOW);
+        float originX = mLocationX + mWidth * 0.5f;
+        float originY = mLocationY - bullet.mHeight;
+        bullet.fireBullet(originX, originY, bullet.mSpeed);
         //告诉View 要刷新我的子弹
         ViewDrawManager.getInstance().drawElement(bullet);
         return bullet;

@@ -13,12 +13,10 @@ import com.smart.control.planewar.widget.Element;
  * 修改:
  */
 public abstract class Bullet extends Element {
-    public int mSpeed;
-    public int mOriginX;
-    public int mOriginY;
+    public float mSpeed;
+    public float mOriginX;
+    public float mOriginY;
     public boolean isOutOfScreen = false;
-    public int mTargetX;
-    public int mTargetY;
 
     public Bullet(Context context) {
         super(context);
@@ -29,7 +27,7 @@ public abstract class Bullet extends Element {
         super.init();
     }
 
-    public void fireBullet(int startX, int startY, final int speed) {
+    public void fireBullet(float startX, float startY, float speed) {
         mOriginX = startX;
         mOriginY = startY;
         mLocationX = mOriginX;
@@ -39,7 +37,7 @@ public abstract class Bullet extends Element {
         OperateCalculateManager.getInstance().calculate(new ControlRunnable() {
             @Override
             public void run() {
-                mLocationY = mLocationY - 15;
+                mLocationY = mLocationY - mSpeed;
                 if (mLocationY <= 0) {
                     setGoOn(false);
                     ViewDrawManager.getInstance().removeElememt(Bullet.this);
