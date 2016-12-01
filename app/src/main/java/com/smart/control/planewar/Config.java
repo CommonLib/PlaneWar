@@ -40,4 +40,13 @@ public class Config {
      */
     public static final int VALUE_STRENGTHEN_WEAPON = 15;
 
+    /**
+     * 子弹飞行速度 单位:在数据刷新间隔时间间隔 子弹飞行的像素数 7.2/10ms
+     */
+    public static final float ENEMY_SPEED_SLOW = 4f;
+    /**
+     *
+     */
+    public static final float ENEMY_SPEED_FAST = 8f;
+
 }

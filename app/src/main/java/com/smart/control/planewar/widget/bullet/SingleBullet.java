@@ -15,7 +15,7 @@ import com.smart.control.planewar.R;
 public class SingleBullet extends Bullet {
     public SingleBullet(Context context){
         super(context);
-        mSpeed = Config.BULLET_SPEED_SLOW;
+        mSpeed = Config.ENEMY_SPEED_SLOW;
     }
 
     @Override

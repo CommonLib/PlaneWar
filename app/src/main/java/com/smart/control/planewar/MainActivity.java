@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             FightPlane fightPlane = mGameMap.getFightPlane();
             fightPlane.shootBullet();
+            mGameMap.refreshEnemy();
             mHandler.postDelayed(this, fightPlane.attackInterval);
         }
     }

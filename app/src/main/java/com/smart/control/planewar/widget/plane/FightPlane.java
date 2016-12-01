@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.smart.control.planewar.Config;
+import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
@@ -25,6 +26,11 @@ public class FightPlane extends Plane {
 
     public FightPlane(Context context) {
         super(context);
+    }
+
+    @Override
+    protected ControlRunnable onFiredDataDealWith() {
+        return null;
     }
 
     @Override
@@ -54,10 +60,10 @@ public class FightPlane extends Plane {
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
         Bullet bullet = mBulletQueue.pollLast();
-        if(bullet!= null && bullet.isOutOfScreen){
+        if (bullet != null && bullet.isOutOfScreen) {
             bullet.isOutOfScreen = false;
             mBullet = bullet;
-        }else{
+        } else {
             mBullet = new SingleBullet(getContext());
             mBulletQueue.addFirst(mBullet);
         }
@@ -71,9 +77,9 @@ public class FightPlane extends Plane {
         //获取当前战机的位置，在当前位置发射子弹
         float originX = mLocationX + mWidth * 0.5f;
         float originY = mLocationY - bullet.mHeight;
-        bullet.fireBullet(originX, originY, bullet.mSpeed);
+        bullet.fire(originX, originY, originX, 0, bullet.mSpeed);
         //告诉View 要刷新我的子弹
-        ViewDrawManager.getInstance().drawElement(bullet);
+        ViewDrawManager.getInstance().drawBullet(bullet);
         return bullet;
     }
 

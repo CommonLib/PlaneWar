@@ -8,9 +8,10 @@ import android.view.View;
 
 import com.smart.control.planewar.Config;
 import com.smart.control.planewar.ViewDrawManager;
+import com.smart.control.planewar.widget.bullet.Bullet;
+import com.smart.control.planewar.widget.plane.EnemyPlane;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by byang059 on 11/24/16.
@@ -20,46 +21,30 @@ import java.util.Random;
 public class BattleFieldView extends View {
 
     private final Paint mPaint;
-    private final Random mRandom;
 
     public BattleFieldView(Context context) {
         super(context);
         mPaint = new Paint();
-        mRandom = new Random(10);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        ArrayList<Element> elements = ViewDrawManager.getInstance().getElements();
-        for (int i = 0; i < elements.size(); i++) {
-            Element element = elements.get(i);
+        ArrayList<Bullet> bullets = ViewDrawManager.getInstance().getBullets();
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
             //bug ui and data always read data, sync thread issue.
-            canvas.drawBitmap(element.mStyleBitmap, element.mLocationX, element.mLocationY,
+            canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY,
+                    mPaint);
+        }
+        ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
+        for (int i = 0; i < enemyPlanes.size(); i++) {
+            EnemyPlane enemyPlane = enemyPlanes.get(i);
+            //bug ui and data always read data, sync thread issue.
+            canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX, enemyPlane.mLocationY,
                     mPaint);
         }
         SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
         invalidate();
-    }
-
-    public void refreshEnemy(){
-        //根据随机数刷新敌机
-        int type = mRandom.nextInt();
-        switch (type){
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                break;
-            case 6:
-            case 7:
-            case 8:
-                break;
-            case 9:
-                break;
-            case 10:
-                break;
-        }
     }
 }

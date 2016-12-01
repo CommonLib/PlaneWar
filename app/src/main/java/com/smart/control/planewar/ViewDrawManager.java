@@ -1,6 +1,7 @@
 package com.smart.control.planewar;
 
-import com.smart.control.planewar.widget.Element;
+import com.smart.control.planewar.widget.bullet.Bullet;
+import com.smart.control.planewar.widget.plane.*;
 
 import java.util.ArrayList;
 
@@ -10,24 +11,41 @@ import java.util.ArrayList;
 
 public class ViewDrawManager {
     public static ViewDrawManager manager = new ViewDrawManager();
-    private ArrayList<Element> mElements = new ArrayList<>();
+    private ArrayList<Bullet> mBullets = new ArrayList<>();
+    private ArrayList<EnemyPlane> mEnemyPlanes = new ArrayList<>();
+    //private ArrayList<Bullet> mWeapons = new ArrayList<>();
 
     public static ViewDrawManager getInstance(){
         return manager;
     }
 
-    public ArrayList<Element> getElements(){
-        return mElements;
+    public ArrayList<Bullet> getBullets(){
+        return mBullets;
     }
 
-    public void drawElement(Element element) {
-        if (mElements.contains(element)) {
+    public void drawBullet(Bullet element) {
+        if (mBullets.contains(element)) {
             return;
         }
-        mElements.add(element);
+        mBullets.add(element);
     }
 
-    public void removeElememt(Element element) {
-        mElements.remove(element);
+    public void removeBullet(Bullet element) {
+        mBullets.remove(element);
+    }
+
+    public ArrayList<EnemyPlane> getEnemyPlanes(){
+        return mEnemyPlanes;
+    }
+
+    public void drawEnemyPlane(EnemyPlane element) {
+        if (mEnemyPlanes.contains(element)) {
+            return;
+        }
+        mEnemyPlanes.add(element);
+    }
+
+    public void removeEnemyPlane(EnemyPlane element) {
+        mEnemyPlanes.remove(element);
     }
 }

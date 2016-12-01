@@ -21,7 +21,7 @@ public class DoubleBullet extends Bullet {
     @Override
     protected void init() {
         super.init();
-        mSpeed = Config.BULLET_SPEED_FAST;
+        mSpeed = Config.ENEMY_SPEED_FAST;
     }
 
     @Override

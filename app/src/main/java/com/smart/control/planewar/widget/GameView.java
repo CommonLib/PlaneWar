@@ -7,7 +7,15 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.smart.control.planewar.Config;
+import com.smart.control.planewar.ViewDrawManager;
+import com.smart.control.planewar.widget.plane.BigEnemyPlane;
+import com.smart.control.planewar.widget.plane.EnemyPlane;
 import com.smart.control.planewar.widget.plane.FightPlane;
+import com.smart.control.planewar.widget.plane.LittleEnemyPlane;
+import com.smart.control.planewar.widget.plane.NormalEnemyPlane;
+
+import java.util.Random;
 
 /**
  * @author:dongpo 创建时间: 9/13/2016
@@ -24,7 +32,7 @@ public class GameView extends FrameLayout {
     private float mLastX;
     private float mLastY;
     private BattleFieldView mBattleFieldView;
-
+    private Random mRandom;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,16 +55,18 @@ public class GameView extends FrameLayout {
                 mFightPlaneVerticalRange = mParentHeight - mFightPlane.mHeight;
             }
         });
+        mRandom = new Random();
     }
 
     private LayoutParams getBattleFiledInitParams() {
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
-                .MATCH_PARENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
         return params;
     }
 
     private LayoutParams getFightInitParams() {
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         return params;
     }
@@ -136,5 +146,29 @@ public class GameView extends FrameLayout {
                 break;
         }
         return true;
+    }
+
+    public void refreshEnemy() {
+        //根据随机数刷新敌机
+        int randomNum = mRandom.nextInt(100);
+        EnemyPlane enemyPlane;
+        if (randomNum >= 0 && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE) {
+            //刷新小飞机
+            enemyPlane = new LittleEnemyPlane(getContext());
+        } else if (randomNum >= Config.VALUE_LITTLE_ENEMY_PLANE
+                && randomNum < Config.VALUE_NORMAL_ENEMY_PANE) {
+            //刷新中型飞机
+            enemyPlane = new NormalEnemyPlane(getContext());
+        } else {
+            //刷新大型飞机
+            enemyPlane = new BigEnemyPlane(getContext());
+        }
+        drawEnemyPlane(enemyPlane);
+        int startX = mRandom.nextInt(mParentWidth);
+        enemyPlane.fire(startX, 0, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
+    }
+
+    private void drawEnemyPlane(EnemyPlane plane) {
+        ViewDrawManager.getInstance().drawEnemyPlane(plane);
     }
 }

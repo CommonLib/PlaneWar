@@ -3,20 +3,16 @@ package com.smart.control.planewar.widget.bullet;
 import android.content.Context;
 
 import com.smart.control.planewar.ControlRunnable;
-import com.smart.control.planewar.OperateCalculateManager;
 import com.smart.control.planewar.ViewDrawManager;
-import com.smart.control.planewar.widget.Element;
+import com.smart.control.planewar.widget.MoveAbleElement;
 
 /**
  * @author:dongpo 创建时间: 9/13/2016
  * 描述:
  * 修改:
  */
-public abstract class Bullet extends Element {
-    public float mSpeed;
-    public float mOriginX;
-    public float mOriginY;
-    public boolean isOutOfScreen = false;
+public abstract class Bullet extends MoveAbleElement {
+
 
     public Bullet(Context context) {
         super(context);
@@ -27,24 +23,18 @@ public abstract class Bullet extends Element {
         super.init();
     }
 
-    public void fireBullet(float startX, float startY, float speed) {
-        mOriginX = startX;
-        mOriginY = startY;
-        mLocationX = mOriginX;
-        mLocationY = mOriginY;
-        mSpeed = speed;
-        //将初始化数据，和子弹，交给数据处理系统处理数据
-        OperateCalculateManager.getInstance().calculate(new ControlRunnable() {
+    @Override
+    protected ControlRunnable onFiredDataDealWith() {
+        return new ControlRunnable() {
             @Override
             public void run() {
                 mLocationY = mLocationY - mSpeed;
-                if (mLocationY <= 0) {
+                if (mLocationY <= mEndY) {
                     setGoOn(false);
-                    ViewDrawManager.getInstance().removeElememt(Bullet.this);
+                    ViewDrawManager.getInstance().removeBullet(Bullet.this);
                     isOutOfScreen = true;
                 }
             }
-        });
+        };
     }
-
 }
