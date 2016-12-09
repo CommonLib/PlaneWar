@@ -2,7 +2,6 @@ package com.smart.control.planewar.widget.plane;
 
 import android.content.Context;
 
-import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.ViewDrawManager;
 
 /**
@@ -17,17 +16,11 @@ public abstract class EnemyPlane extends Plane {
     }
 
     @Override
-    protected ControlRunnable onFiredDataDealWith() {
-        return new ControlRunnable() {
-            @Override
-            public void run() {
-                mLocationY = mLocationY - mSpeed;
-                if (mLocationY <= 0) {
-                    setGoOn(false);
-                    ViewDrawManager.getInstance().removeEnemyPlane(EnemyPlane.this);
-                    isOutOfScreen = true;
-                }
-            }
-        };
+    public void calculate() {
+        mLocationY = mLocationY - mSpeed;
+        if (mLocationY <= 0) {
+            ViewDrawManager.getInstance().removeEnemyPlane(EnemyPlane.this);
+            isOutOfScreen = true;
+        }
     }
 }

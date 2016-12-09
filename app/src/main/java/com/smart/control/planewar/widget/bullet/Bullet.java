@@ -2,7 +2,6 @@ package com.smart.control.planewar.widget.bullet;
 
 import android.content.Context;
 
-import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.MoveAbleElement;
 
@@ -24,17 +23,15 @@ public abstract class Bullet extends MoveAbleElement {
     }
 
     @Override
-    protected ControlRunnable onFiredDataDealWith() {
-        return new ControlRunnable() {
-            @Override
-            public void run() {
-                mLocationY = mLocationY - mSpeed;
-                if (mLocationY <= mEndY) {
-                    setGoOn(false);
-                    ViewDrawManager.getInstance().removeBullet(Bullet.this);
-                    isOutOfScreen = true;
-                }
-            }
-        };
+    public void calculate(){
+        mLocationY = mLocationY - mSpeed;
+        if (!isBulletFly()) {
+            ViewDrawManager.getInstance().removeBullet(Bullet.this);
+            isOutOfScreen = true;
+        }
+    }
+
+    public boolean isBulletFly(){
+        return mLocationY > mEndY;
     }
 }

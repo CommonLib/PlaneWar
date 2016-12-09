@@ -3,6 +3,8 @@ package com.smart.control.planewar;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.smart.control.planewar.widget.MoveAbleElement;
+
 /**
  * Created by byang059 on 11/25/16.
  */
@@ -30,12 +32,12 @@ public class OperateCalculateManager {
         return manager;
     }
 
-    public void calculate(final ControlRunnable runnable) {
+    public void startCalculate(final MoveAbleElement element) {
         Runnable calculateRun = new Runnable() {
             @Override
             public void run() {
-                runnable.run();
-                if(runnable.isGoOn){
+                element.calculate();
+                if (!element.isOutOfScreen) {
                     mCalculateHandler.postDelayed(this, Config.DATA_INTERVAL_REFRESH);
                 }
             }

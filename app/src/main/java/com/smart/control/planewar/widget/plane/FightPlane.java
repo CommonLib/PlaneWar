@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.smart.control.planewar.Config;
-import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
@@ -29,8 +28,8 @@ public class FightPlane extends Plane {
     }
 
     @Override
-    protected ControlRunnable onFiredDataDealWith() {
-        return null;
+    public void calculate() {
+
     }
 
     @Override

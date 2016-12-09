@@ -23,11 +23,11 @@ public class Config {
     /**
      * 数据刷新间隔时间
      */
-    public static final int DATA_INTERVAL_REFRESH = 10;
+    public static final int DATA_INTERVAL_REFRESH = 5;
     /**
      * View刷新间隔时间
      */
-    public static final int VIEW_INTERVAL_REFRESH = 20;
+    public static final int VIEW_INTERVAL_REFRESH = 5;
 
     /**
      * 刷新敌机概率值
@@ -41,12 +41,17 @@ public class Config {
     public static final int VALUE_STRENGTHEN_WEAPON = 15;
 
     /**
+     * 敌军刷新间隔 单位：秒
+     */
+    public static final int ENEMY_REFRESH_INTERVAL = 500;
+
+    /**
      * 子弹飞行速度 单位:在数据刷新间隔时间间隔 子弹飞行的像素数 7.2/10ms
      */
-    public static final float ENEMY_SPEED_SLOW = 4f;
+    public static final float ENEMY_SPEED_SLOW = 2f;
     /**
      *
      */
-    public static final float ENEMY_SPEED_FAST = 8f;
+    public static final float ENEMY_SPEED_FAST = 4f;
 
 }

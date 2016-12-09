@@ -2,7 +2,6 @@ package com.smart.control.planewar.widget;
 
 import android.content.Context;
 
-import com.smart.control.planewar.ControlRunnable;
 import com.smart.control.planewar.OperateCalculateManager;
 
 /**
@@ -31,11 +30,8 @@ public abstract class MoveAbleElement extends Element {
         mLocationY = mOriginY;
         mSpeed = speed;
         //将初始化数据，和子弹，交给数据处理系统处理数据
-        OperateCalculateManager.getInstance().calculate(onFiredDataDealWith());
+        OperateCalculateManager.getInstance().startCalculate(this);
     }
 
-    /**
-     * this is run in sub-thread
-     */
-    protected abstract ControlRunnable onFiredDataDealWith();
+    public abstract void calculate();
 }

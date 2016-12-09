@@ -10,7 +10,6 @@
     <com.smart.control.planewar.widget.GameView
         android:id="@+id/plane_war"
         android:layout_width="match_parent"
-        android:background="@mipmap/bg"
         android:layout_height="0dp"
         android:layout_weight="1">
     </com.smart.control.planewar.widget.GameView>

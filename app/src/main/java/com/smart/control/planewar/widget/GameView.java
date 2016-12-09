@@ -156,7 +156,7 @@ public class GameView extends FrameLayout {
             //刷新小飞机
             enemyPlane = new LittleEnemyPlane(getContext());
         } else if (randomNum >= Config.VALUE_LITTLE_ENEMY_PLANE
-                && randomNum < Config.VALUE_NORMAL_ENEMY_PANE) {
+                && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE + Config.VALUE_NORMAL_ENEMY_PANE) {
             //刷新中型飞机
             enemyPlane = new NormalEnemyPlane(getContext());
         } else {
@@ -166,6 +166,7 @@ public class GameView extends FrameLayout {
         drawEnemyPlane(enemyPlane);
         int startX = mRandom.nextInt(mParentWidth);
         enemyPlane.fire(startX, 0, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
+        ViewDrawManager.getInstance().drawPlane(mFightPlane);
     }
 
     private void drawEnemyPlane(EnemyPlane plane) {

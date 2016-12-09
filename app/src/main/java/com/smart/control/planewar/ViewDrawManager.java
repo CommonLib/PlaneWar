@@ -13,6 +13,7 @@ public class ViewDrawManager {
     public static ViewDrawManager manager = new ViewDrawManager();
     private ArrayList<Bullet> mBullets = new ArrayList<>();
     private ArrayList<EnemyPlane> mEnemyPlanes = new ArrayList<>();
+    private Plane mPlane;
     //private ArrayList<Bullet> mWeapons = new ArrayList<>();
 
     public static ViewDrawManager getInstance(){
@@ -47,5 +48,13 @@ public class ViewDrawManager {
 
     public void removeEnemyPlane(EnemyPlane element) {
         mEnemyPlanes.remove(element);
+    }
+
+    public void drawPlane(Plane plane){
+        mPlane = plane;
+    }
+
+    public Plane getPlane(){
+        return mPlane;
     }
 }

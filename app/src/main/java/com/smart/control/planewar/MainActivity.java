@@ -27,18 +27,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FightPlane fightPlane = mGameMap.getFightPlane();
-                mHandler.postDelayed(new Loop(), fightPlane.attackInterval);
+                mHandler.postDelayed(new ShootLoop(), fightPlane.attackInterval);
+                mHandler.post(new EnemyLoop());
             }
         });
     }
 
-    public class Loop implements Runnable {
+    public class ShootLoop implements Runnable {
         @Override
         public void run() {
             FightPlane fightPlane = mGameMap.getFightPlane();
             fightPlane.shootBullet();
-            mGameMap.refreshEnemy();
             mHandler.postDelayed(this, fightPlane.attackInterval);
+        }
+    }
+
+    public class EnemyLoop implements Runnable {
+        @Override
+        public void run() {
+            mGameMap.refreshEnemy();
+            mHandler.postDelayed(this, Config.ENEMY_REFRESH_INTERVAL);
         }
     }
 
