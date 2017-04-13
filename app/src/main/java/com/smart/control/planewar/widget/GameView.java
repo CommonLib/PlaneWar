@@ -166,10 +166,13 @@ public class GameView extends FrameLayout {
         drawEnemyPlane(enemyPlane);
         int startX = mRandom.nextInt(mParentWidth);
         enemyPlane.fire(startX, 0, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
-        ViewDrawManager.getInstance().drawPlane(mFightPlane);
     }
 
     private void drawEnemyPlane(EnemyPlane plane) {
         ViewDrawManager.getInstance().drawEnemyPlane(plane);
+    }
+
+    public void startGame() {
+        mBattleFieldView.startDraw();
     }
 }

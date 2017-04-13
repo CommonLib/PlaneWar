@@ -1,6 +1,7 @@
 package com.smart.control.planewar.widget.bullet;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.MoveAbleElement;
@@ -23,11 +24,12 @@ public abstract class Bullet extends MoveAbleElement {
     }
 
     @Override
-    public void calculate(){
-        mLocationY = mLocationY - mSpeed;
+    public void calculate(float diff){
+        mLocationY = mLocationY - mSpeed * diff;
         if (!isBulletFly()) {
             ViewDrawManager.getInstance().removeBullet(Bullet.this);
             isOutOfScreen = true;
+            Log.d("Log_text", "Bullet+calculate Bullet fly outsize");
         }
     }
 

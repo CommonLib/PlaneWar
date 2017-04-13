@@ -36,7 +36,7 @@ public class OperateCalculateManager {
         Runnable calculateRun = new Runnable() {
             @Override
             public void run() {
-                element.calculate();
+                element.calculateTime();
                 if (!element.isOutOfScreen) {
                     mCalculateHandler.postDelayed(this, Config.DATA_INTERVAL_REFRESH);
                 }

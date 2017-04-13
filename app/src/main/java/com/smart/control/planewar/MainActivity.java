@@ -16,8 +16,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         OperateCalculateManager.getInstance();
+        setContentView(R.layout.activity_main);
         initView();
     }
 
@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FightPlane fightPlane = mGameMap.getFightPlane();
+                ViewDrawManager.getInstance().drawPlane(fightPlane);
                 mHandler.postDelayed(new ShootLoop(), fightPlane.attackInterval);
                 mHandler.post(new EnemyLoop());
+                mGameMap.startGame();
             }
         });
     }

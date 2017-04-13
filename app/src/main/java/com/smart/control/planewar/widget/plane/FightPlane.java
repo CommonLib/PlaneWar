@@ -3,6 +3,7 @@ package com.smart.control.planewar.widget.plane;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.smart.control.planewar.Config;
 import com.smart.control.planewar.R;
@@ -21,14 +22,13 @@ public class FightPlane extends Plane {
     public LinkedList<Bullet> mBulletQueue;
     public int attackInterval;
     private boolean mFirstLayout = true;
-    private Bullet mBullet;
 
     public FightPlane(Context context) {
         super(context);
     }
 
     @Override
-    public void calculate() {
+    public void calculate(float diff) {
 
     }
 
@@ -58,15 +58,17 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
-        Bullet bullet = mBulletQueue.pollLast();
+        Bullet bullet = mBulletQueue.peekLast();
         if (bullet != null && bullet.isOutOfScreen) {
+            mBulletQueue.removeLast();
             bullet.isOutOfScreen = false;
-            mBullet = bullet;
+            Log.d("Log_text", "FightP'lane+shootBullet + user cache Bullet to shoot");
         } else {
-            mBullet = new SingleBullet(getContext());
-            mBulletQueue.addFirst(mBullet);
+            Log.d("Log_text", "FightPlane+shootBullet + new Bullet to shoot");
+            bullet = new SingleBullet(getContext());
         }
-        return shootBullet(mBullet);
+        mBulletQueue.addFirst(bullet);
+        return shootBullet(bullet);
     }
 
     /**
@@ -84,10 +86,6 @@ public class FightPlane extends Plane {
 
     public void stopBullet() {
 
-    }
-
-    public void setBullet(Bullet bullet) {
-        mBullet = bullet;
     }
 
     @Override

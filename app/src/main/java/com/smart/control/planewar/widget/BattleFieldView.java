@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -57,8 +58,7 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-        myThread.isRun = true;
-        myThread.start();
+
     }
 
     @Override
@@ -70,22 +70,47 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
 
     private void drawGame(Canvas canvas) {
         Plane plane = ViewDrawManager.getInstance().getPlane();
-        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
         canvas.drawBitmap(mBackground, 0, 0, mPaint);
+        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
+        ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
         ArrayList<Bullet> bullets = ViewDrawManager.getInstance().getBullets();
+        for (int i = 0; i < enemyPlanes.size(); i++) {
+            EnemyPlane enemyPlane = enemyPlanes.get(i);
+            boolean isCrash = false;
+            for (int j = 0; j < bullets.size(); j++) {
+                Bullet bullet = bullets.get(j);
+                boolean planeHit = enemyPlane.isPlaneHit(bullet);
+                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
+                if(planeHit){
+                    enemyPlane.onHitReduceLife();
+                }
+                if(enemyPlane.isPlaneCrash()){
+                    isCrash = true;
+                    enemyPlanes.remove(enemyPlane);
+                    i--;
+                    bullets.remove(bullet);
+                    break;
+                }
+            }
+
+            if(!isCrash){
+                //bug ui and data always read data, sync thread issue.
+                canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX, enemyPlane.mLocationY,
+                        mPaint);
+            }
+        }
+
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             //bug ui and data always read data, sync thread issue.
             canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY, mPaint);
         }
-        ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
-        for (int i = 0; i < enemyPlanes.size(); i++) {
-            EnemyPlane enemyPlane = enemyPlanes.get(i);
-            //bug ui and data always read data, sync thread issue.
-            canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX, enemyPlane.mLocationY,
-                    mPaint);
-        }
         SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
+    }
+
+    public void startDraw() {
+        myThread.isRun = true;
+        myThread.start();
     }
 
     //线程内部类
