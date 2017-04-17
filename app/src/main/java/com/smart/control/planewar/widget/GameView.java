@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import com.smart.control.planewar.Config;
 import com.smart.control.planewar.ViewDrawManager;
+import com.smart.control.planewar.base.RecycleFactory;
 import com.smart.control.planewar.widget.plane.BigEnemyPlane;
 import com.smart.control.planewar.widget.plane.EnemyPlane;
 import com.smart.control.planewar.widget.plane.FightPlane;
@@ -154,18 +155,18 @@ public class GameView extends FrameLayout {
         EnemyPlane enemyPlane;
         if (randomNum >= 0 && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE) {
             //刷新小飞机
-            enemyPlane = new LittleEnemyPlane(getContext());
+            enemyPlane = RecycleFactory.getInstance().getRecycleInstance(LittleEnemyPlane.class);
         } else if (randomNum >= Config.VALUE_LITTLE_ENEMY_PLANE
                 && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE + Config.VALUE_NORMAL_ENEMY_PANE) {
             //刷新中型飞机
-            enemyPlane = new NormalEnemyPlane(getContext());
+            enemyPlane = RecycleFactory.getInstance().getRecycleInstance(NormalEnemyPlane.class);
         } else {
             //刷新大型飞机
-            enemyPlane = new BigEnemyPlane(getContext());
+            enemyPlane = RecycleFactory.getInstance().getRecycleInstance(BigEnemyPlane.class);
         }
         drawEnemyPlane(enemyPlane);
         int startX = mRandom.nextInt(mParentWidth);
-        enemyPlane.fire(startX, 0, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
+        enemyPlane.fire(startX, 50, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
     }
 
     private void drawEnemyPlane(EnemyPlane plane) {

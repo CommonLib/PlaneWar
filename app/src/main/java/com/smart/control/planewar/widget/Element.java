@@ -7,12 +7,14 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.smart.control.planewar.base.RecycleAble;
+
 /**
  * @author:dongpo 创建时间: 9/14/2016
  * 描述:
  * 修改:
  */
-public abstract class Element extends View {
+public abstract class Element extends View implements RecycleAble {
     public Bitmap mStyleBitmap;
     public float mLocationX;
     public float mLocationY;

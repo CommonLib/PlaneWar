@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -80,7 +79,7 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
             for (int j = 0; j < bullets.size(); j++) {
                 Bullet bullet = bullets.get(j);
                 boolean planeHit = enemyPlane.isPlaneHit(bullet);
-                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
+//                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
                 if(planeHit){
                     enemyPlane.onHitReduceLife();
                 }

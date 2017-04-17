@@ -3,11 +3,11 @@ package com.smart.control.planewar.widget.plane;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.smart.control.planewar.Config;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
+import com.smart.control.planewar.base.RecycleFactory;
 import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.bullet.SingleBullet;
 
@@ -30,6 +30,11 @@ public class FightPlane extends Plane {
     @Override
     public void calculate(float diff) {
 
+    }
+
+    @Override
+    public boolean isElementFly() {
+        return false;
     }
 
     @Override
@@ -58,17 +63,7 @@ public class FightPlane extends Plane {
      */
     public Bullet shootBullet() {
         //获取当前战机的位置，在当前位置发射子弹
-        Bullet bullet = mBulletQueue.peekLast();
-        if (bullet != null && bullet.isOutOfScreen) {
-            mBulletQueue.removeLast();
-            bullet.isOutOfScreen = false;
-            Log.d("Log_text", "FightP'lane+shootBullet + user cache Bullet to shoot");
-        } else {
-            Log.d("Log_text", "FightPlane+shootBullet + new Bullet to shoot");
-            bullet = new SingleBullet(getContext());
-        }
-        mBulletQueue.addFirst(bullet);
-        return shootBullet(bullet);
+        return shootBullet(RecycleFactory.getInstance().getRecycleInstance(SingleBullet.class));
     }
 
     /**

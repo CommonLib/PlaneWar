@@ -1,6 +1,5 @@
 package com.smart.control.planewar.widget.bullet;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -13,10 +12,6 @@ import com.smart.control.planewar.R;
  * 修改:
  */
 public class DoubleBullet extends Bullet {
-
-    public DoubleBullet(Context context) {
-        super(context);
-    }
 
     @Override
     protected void init() {

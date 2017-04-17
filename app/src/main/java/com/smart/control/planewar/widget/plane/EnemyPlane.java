@@ -1,8 +1,8 @@
 package com.smart.control.planewar.widget.plane;
 
-import android.content.Context;
 import android.util.Log;
 
+import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
 
@@ -13,29 +13,36 @@ import com.smart.control.planewar.widget.bullet.Bullet;
  */
 public abstract class EnemyPlane extends Plane {
 
-    public EnemyPlane(Context context) {
-        super(context);
+    public EnemyPlane() {
+        super(PlaneApplication.getInstance());
+    }
+
+    @Override
+    protected void init() {
+        super.init();
         mLifeLeft = 3;
     }
 
     @Override
     public void calculate(float diff) {
-        mLocationY = mLocationY - mSpeed * diff;
-        if (mLocationY <= 0) {
+        mLocationY = mLocationY - mSpeed;
+        if (!isElementFly()) {
+            Log.d("Log_text", "EnemyPlane+calculate out of size");
             ViewDrawManager.getInstance().removeEnemyPlane(EnemyPlane.this);
             isOutOfScreen = true;
         }
+//        Log.d("Log_text", "EnemyPlane+calculate mLocationY" + mLocationY + " speed "+ mSpeed);
     }
 
     public boolean isPlaneHit(Bullet bullet){
         if(!isPlaneInSameRow(bullet)){
-            Log.d("Log_text", "EnemyPlane+isPlaneHit => isPlaneInSameRow => false");
+//            Log.d("Log_text", "EnemyPlane+isPlaneHit => isPlaneInSameRow => false");
             return false;
         }
 
         boolean isHit = bullet.mLocationY >= (mLocationY - bullet.mHeight) && bullet.mLocationY <= (
                 mLocationY + mHeight);
-        Log.d("Log_text", "EnemyPlane+isPlaneHit => isPlaneInSameRow => true");
+//        Log.d("Log_text", "EnemyPlane+isPlaneHit => isPlaneInSameRow => true");
         return isHit;
     }
 
@@ -51,4 +58,15 @@ public abstract class EnemyPlane extends Plane {
         return mLifeLeft <= 0;
     }
 
+    @Override
+    public boolean isElementFly() {
+        //[0,100]  start 0 end 100
+        return mLocationY <= mEndY;
+    }
+
+    @Override
+    public void onRecycleCleanData() {
+        super.onRecycleCleanData();
+        mLifeLeft = 3;
+    }
 }

@@ -12,8 +12,8 @@ import com.smart.control.planewar.OperateCalculateManager;
 public abstract class MoveAbleElement extends Element {
 
     public float mSpeed;
-    public float mOriginX;
-    public float mOriginY;
+    public float mStartX;
+    public float mStartY;
     public float mEndX;
     public float mEndY;
     public volatile boolean isOutOfScreen = false;
@@ -24,12 +24,12 @@ public abstract class MoveAbleElement extends Element {
     }
 
     public void fire(float startX, float startY, float endX, float endY, float speed) {
-        mOriginX = startX;
-        mOriginY = startY;
+        mStartX = startX;
+        mStartY = startY;
         mEndX = endX;
         mEndY = endY;
-        mLocationX = mOriginX;
-        mLocationY = mOriginY;
+        mLocationX = mStartX;
+        mLocationY = mStartY;
         mSpeed = speed;
         //将初始化数据，和子弹，交给数据处理系统处理数据
         OperateCalculateManager.getInstance().startCalculate(this);
@@ -46,5 +46,23 @@ public abstract class MoveAbleElement extends Element {
         mLastInvokeTime = currentTime;
     }
 
+    @Override
+    public boolean isCanRecycle() {
+        return isOutOfScreen;
+    }
+
     public abstract void calculate(float delayMillis);
+
+    @Override
+    public void setRecycle(boolean canRecycle) {
+        isOutOfScreen = canRecycle;
+    }
+
+    @Override
+    public void onRecycleCleanData() {
+        mLocationY = mStartY;
+        mLocationX = mStartX;
+    }
+
+    public abstract boolean isElementFly();
 }

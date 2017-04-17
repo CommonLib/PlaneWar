@@ -1,6 +1,5 @@
 package com.smart.control.planewar.widget.plane;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -13,9 +12,6 @@ import com.smart.control.planewar.R;
  */
 public class NormalEnemyPlane extends EnemyPlane {
 
-    public NormalEnemyPlane(Context context) {
-        super(context);
-    }
 
     @Override
     protected Bitmap getElementIcon() {
