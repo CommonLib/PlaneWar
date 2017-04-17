@@ -34,7 +34,7 @@ public class OperateCalculateManager {
                             }
                         }
                     }
-                    SystemClock.sleep(10);
+                    SystemClock.sleep(Config.DATA_INTERVAL_REFRESH);
                 }
             }
         });

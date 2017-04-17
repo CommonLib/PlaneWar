@@ -33,8 +33,8 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
         mPaint = new Paint();
         holder = this.getHolder();
         holder.addCallback(this);
-//        setZOrderOnTop(true);
-//        getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        //        setZOrderOnTop(true);
+        //        getHolder().setFormat(PixelFormat.TRANSLUCENT);
         myThread = new DrawThread(holder);//创建一个绘图线程
         setBackgroundResource(R.mipmap.bg);
         setZOrderOnTop(true);//使surfaceview放到最顶层
@@ -65,8 +65,7 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
 
     private void drawGame(Canvas canvas) {
         Plane plane = ViewDrawManager.getInstance().getPlane();
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-//        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
+        //        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
         ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
         ArrayList<Bullet> bullets = ViewDrawManager.getInstance().getBullets();
         for (int i = 0; i < enemyPlanes.size(); i++) {
@@ -74,33 +73,37 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
             boolean isCrash = false;
             for (int j = 0; j < bullets.size(); j++) {
                 Bullet bullet = bullets.get(j);
-                boolean planeHit = enemyPlane.isPlaneHit(bullet);
-//                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
-                if(planeHit){
-                    enemyPlane.onHitReduceLife();
-                    if(enemyPlane.isPlaneCrash()){
-                        isCrash = true;
-                        enemyPlanes.remove(enemyPlane);
-                        i--;
+                if (!bullet.isHit()) {
+                    boolean planeHit = enemyPlane.isPlaneHit(bullet);
+                    //                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
+                    if (planeHit) {
+                        enemyPlane.onHitReduceLife();
+                        bullet.setHit(true);
                         bullets.remove(bullet);
-                        break;
+                        if (enemyPlane.isPlaneCrash()) {
+                            isCrash = true;
+                            enemyPlanes.remove(enemyPlane);
+                            i--;
+                            break;
+                        }
                     }
                 }
             }
 
-            if(!isCrash){
+            if (!isCrash) {
                 //bug ui and data always read data, sync thread issue.
-                canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX, enemyPlane.mLocationY,
-                        mPaint);
+                canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX,
+                        enemyPlane.mLocationY, mPaint);
             }
         }
 
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             //bug ui and data always read data, sync thread issue.
-            canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY, mPaint);
+            if(!bullet.isHit()){
+                canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY, mPaint);
+            }
         }
-        SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
     }
 
     public void startDraw() {
@@ -119,22 +122,13 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
         @Override
         public void run() {
             while (GameView.isGameContinue) {
-                Canvas c = null;
-                try {
-                    synchronized (holder) {
-                        c = holder.lockCanvas();//锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
-                        c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                        drawGame(c);
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                } finally {
-                    if (c != null) {
-                        holder.unlockCanvasAndPost(c);//结束锁定画图，并提交改变。
-
-                    }
+                synchronized (holder) {
+                    Canvas c = holder.lockCanvas();//锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
+                    c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                    drawGame(c);
+                    holder.unlockCanvasAndPost(c);//结束锁定画图，并提交改变。
                 }
+                SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
             }
         }
     }

@@ -11,6 +11,8 @@ import com.smart.control.planewar.widget.MoveAbleElement;
  */
 public abstract class Bullet extends MoveAbleElement {
 
+    protected boolean isHit;
+
     public Bullet() {
         super(PlaneApplication.getInstance());
     }
@@ -29,5 +31,19 @@ public abstract class Bullet extends MoveAbleElement {
     public boolean isElementFly() {
         //[100, 0] start 100 end 0
         return mLocationY >= mEndY && mLocationY <= mStartY;
+    }
+
+    public boolean isHit() {
+        return isHit;
+    }
+
+    public void setHit(boolean hit) {
+        isHit = hit;
+    }
+
+    @Override
+    public void onRecycleCleanData() {
+        super.onRecycleCleanData();
+        isHit = false;
     }
 }
