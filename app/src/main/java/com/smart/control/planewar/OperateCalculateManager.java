@@ -1,9 +1,12 @@
 package com.smart.control.planewar;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.os.SystemClock;
 
+import com.smart.control.planewar.widget.GameView;
 import com.smart.control.planewar.widget.MoveAbleElement;
+
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by byang059 on 11/25/16.
@@ -11,18 +14,28 @@ import com.smart.control.planewar.widget.MoveAbleElement;
 
 public class OperateCalculateManager {
 
-    public static OperateCalculateManager manager = new OperateCalculateManager();
+    public static final OperateCalculateManager manager = new OperateCalculateManager();
     private final Thread mThread;
-    private Handler mCalculateHandler;
+    private HashSet<MoveAbleElement> mElements = new HashSet<>();
 
     public OperateCalculateManager() {
         //开启线程，处理数据
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Looper.prepare();
-                mCalculateHandler = new Handler();
-                Looper.loop();
+                while (GameView.isGameContinue){
+                    synchronized (manager){
+                        Iterator<MoveAbleElement> iterator = mElements.iterator();
+                        while (iterator.hasNext()) {
+                            MoveAbleElement element = iterator.next();
+                            element.calculateTime();
+                            if (!element.isOutOfScreen) {
+                                iterator.remove();
+                            }
+                        }
+                    }
+                    SystemClock.sleep(10);
+                }
             }
         });
         mThread.start();
@@ -33,15 +46,8 @@ public class OperateCalculateManager {
     }
 
     public void startCalculate(final MoveAbleElement element) {
-        Runnable calculateRun = new Runnable() {
-            @Override
-            public void run() {
-                element.calculateTime();
-                if (!element.isOutOfScreen) {
-                    mCalculateHandler.postDelayed(this, Config.DATA_INTERVAL_REFRESH);
-                }
-            }
-        };
-        mCalculateHandler.post(calculateRun);
+        synchronized (manager){
+            mElements.add(element);
+        }
     }
 }

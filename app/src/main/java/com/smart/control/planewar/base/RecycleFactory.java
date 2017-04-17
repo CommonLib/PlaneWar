@@ -1,7 +1,6 @@
 package com.smart.control.planewar.base;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,9 +34,9 @@ public class RecycleFactory {
             queue.removeLast();
             recycleObj.setRecycle(false);
             recycleObj.onRecycleCleanData();
-            Log.d("Log_text", "getRecycleInstance => "+ key +" =>cache recycleObj");
+//            Log.d("Log_text", "getRecycleInstance => "+ key +" =>cache recycleObj");
         } else {
-            Log.d("Log_text", "getRecycleInstance => "+ key +" =>new recycleObj");
+//            Log.d("Log_text", "getRecycleInstance => "+ key +" =>new recycleObj");
             recycleObj = getNewRecycleObj(tClass, key);
         }
         queue.addFirst(recycleObj);

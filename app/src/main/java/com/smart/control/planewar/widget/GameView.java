@@ -34,6 +34,7 @@ public class GameView extends FrameLayout {
     private float mLastY;
     private BattleFieldView mBattleFieldView;
     private Random mRandom;
+    public static boolean isGameContinue = true;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,12 +42,12 @@ public class GameView extends FrameLayout {
     }
 
     private void init() {
-        //初始化飞机
-        mFightPlane = new FightPlane(getContext());
-        addView(mFightPlane, getFightInitParams());
         //初始化战场
         mBattleFieldView = new BattleFieldView(getContext());
         addView(mBattleFieldView, getBattleFiledInitParams());
+        //初始化飞机
+        mFightPlane = new FightPlane(getContext());
+        addView(mFightPlane, getFightInitParams());
         post(new Runnable() {
             @Override
             public void run() {

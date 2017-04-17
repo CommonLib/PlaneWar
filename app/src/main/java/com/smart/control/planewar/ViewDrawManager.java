@@ -25,9 +25,6 @@ public class ViewDrawManager {
     }
 
     public void drawBullet(Bullet element) {
-        if (mBullets.contains(element)) {
-            return;
-        }
         mBullets.add(element);
     }
 
@@ -40,9 +37,6 @@ public class ViewDrawManager {
     }
 
     public void drawEnemyPlane(EnemyPlane element) {
-        if (mEnemyPlanes.contains(element)) {
-            return;
-        }
         mEnemyPlanes.add(element);
     }
 

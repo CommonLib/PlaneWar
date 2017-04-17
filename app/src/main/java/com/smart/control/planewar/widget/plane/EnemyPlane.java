@@ -25,13 +25,14 @@ public abstract class EnemyPlane extends Plane {
 
     @Override
     public void calculate(float diff) {
-        mLocationY = mLocationY - mSpeed;
+        mLocationY = mLocationY - mSpeed * diff;
         if (!isElementFly()) {
-            Log.d("Log_text", "EnemyPlane+calculate out of size");
+//            Log.d("Log_text", "EnemyPlane+calculate out of size");
             ViewDrawManager.getInstance().removeEnemyPlane(EnemyPlane.this);
             isOutOfScreen = true;
         }
-//        Log.d("Log_text", "EnemyPlane+calculate mLocationY" + mLocationY + " speed "+ mSpeed);
+        /*Log.d("Log_text", "EnemyPlane+calculate mLocationY" + mLocationY + " speed * diff"+
+                mSpeed * diff);*/
     }
 
     public boolean isPlaneHit(Bullet bullet){
@@ -52,6 +53,7 @@ public abstract class EnemyPlane extends Plane {
 
     public void onHitReduceLife(){
         mLifeLeft -- ;
+        Log.d("Log_text", "EnemyPlane+isPlaneHit => onHitReduceLife => " + mLifeLeft);
     }
 
     public boolean isPlaneCrash(){

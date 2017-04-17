@@ -1,11 +1,10 @@
 package com.smart.control.planewar.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
@@ -28,21 +27,18 @@ import java.util.ArrayList;
 public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Paint mPaint;
-    private Bitmap mBackground;
 
     public BattleFieldView(Context context) {
         super(context);
         mPaint = new Paint();
         holder = this.getHolder();
         holder.addCallback(this);
+//        setZOrderOnTop(true);
+//        getHolder().setFormat(PixelFormat.TRANSLUCENT);
         myThread = new DrawThread(holder);//创建一个绘图线程
-        post(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bg = BitmapFactory.decodeResource(getResources(), R.mipmap.bg);
-                mBackground = Bitmap.createScaledBitmap(bg, getWidth(), getHeight(), false);
-            }
-        });
+        setBackgroundResource(R.mipmap.bg);
+        setZOrderOnTop(true);//使surfaceview放到最顶层
+        getHolder().setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
     }
 
     private SurfaceHolder holder;
@@ -63,14 +59,14 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-        myThread.isRun = false;
+        GameView.isGameContinue = false;
     }
 
 
     private void drawGame(Canvas canvas) {
         Plane plane = ViewDrawManager.getInstance().getPlane();
-        canvas.drawBitmap(mBackground, 0, 0, mPaint);
-        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+//        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
         ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
         ArrayList<Bullet> bullets = ViewDrawManager.getInstance().getBullets();
         for (int i = 0; i < enemyPlanes.size(); i++) {
@@ -82,13 +78,13 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
 //                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
                 if(planeHit){
                     enemyPlane.onHitReduceLife();
-                }
-                if(enemyPlane.isPlaneCrash()){
-                    isCrash = true;
-                    enemyPlanes.remove(enemyPlane);
-                    i--;
-                    bullets.remove(bullet);
-                    break;
+                    if(enemyPlane.isPlaneCrash()){
+                        isCrash = true;
+                        enemyPlanes.remove(enemyPlane);
+                        i--;
+                        bullets.remove(bullet);
+                        break;
+                    }
                 }
             }
 
@@ -108,23 +104,21 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     public void startDraw() {
-        myThread.isRun = true;
+        GameView.isGameContinue = true;
         myThread.start();
     }
 
     //线程内部类
     class DrawThread extends Thread {
         private SurfaceHolder holder;
-        public boolean isRun;
 
         public DrawThread(SurfaceHolder holder) {
             this.holder = holder;
-            isRun = true;
         }
 
         @Override
         public void run() {
-            while (isRun) {
+            while (GameView.isGameContinue) {
                 Canvas c = null;
                 try {
                     synchronized (holder) {

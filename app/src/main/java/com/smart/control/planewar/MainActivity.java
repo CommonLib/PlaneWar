@@ -2,6 +2,7 @@ package com.smart.control.planewar;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -28,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FightPlane fightPlane = mGameMap.getFightPlane();
                 ViewDrawManager.getInstance().drawPlane(fightPlane);
-                mHandler.postDelayed(new ShootLoop(), fightPlane.attackInterval);
-                mHandler.post(new EnemyLoop());
+//                mHandler.postDelayed(new ShootLoop(), fightPlane.attackInterval);
+                new Thread(new ShootLoop()).start();
+                new Thread(new EnemyLoop()).start();
+//                mHandler.post(new EnemyLoop());
                 mGameMap.startGame();
             }
         });
@@ -38,18 +41,31 @@ public class MainActivity extends AppCompatActivity {
     public class ShootLoop implements Runnable {
         @Override
         public void run() {
-            FightPlane fightPlane = mGameMap.getFightPlane();
-            fightPlane.shootBullet();
-            mHandler.postDelayed(this, fightPlane.attackInterval);
+            while (GameView.isGameContinue){
+                FightPlane fightPlane = mGameMap.getFightPlane();
+                fightPlane.shootBullet();
+                SystemClock.sleep(fightPlane.attackInterval);
+            }
         }
     }
 
     public class EnemyLoop implements Runnable {
         @Override
         public void run() {
-            mGameMap.refreshEnemy();
-            mHandler.postDelayed(this, Config.ENEMY_REFRESH_INTERVAL);
+            while (GameView.isGameContinue){
+                mGameMap.refreshEnemy();
+                SystemClock.sleep(Config.ENEMY_REFRESH_INTERVAL);
+            }
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 }
