@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.smart.control.planewar.Config;
+import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.base.RecycleFactory;
@@ -42,7 +42,7 @@ public class FightPlane extends Plane {
         super.init();
         mSpeed = 0;
         mLifeLeft = 1;
-        attackInterval = Config.SPEED_MIDDLE;
+        attackInterval = PlaneConfig.SPEED_MIDDLE;
         mBulletQueue = new LinkedList<>();
         post(new Runnable() {
             @Override

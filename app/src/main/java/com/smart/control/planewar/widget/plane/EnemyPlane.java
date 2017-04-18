@@ -18,12 +18,6 @@ public abstract class EnemyPlane extends Plane {
     }
 
     @Override
-    protected void init() {
-        super.init();
-        mLifeLeft = 3;
-    }
-
-    @Override
     public void calculate(float diff) {
         mLocationY = mLocationY - mSpeed * diff;
         if (!isElementFly()) {
@@ -69,6 +63,5 @@ public abstract class EnemyPlane extends Plane {
     @Override
     public void onRecycleCleanData() {
         super.onRecycleCleanData();
-        mLifeLeft = 3;
     }
 }

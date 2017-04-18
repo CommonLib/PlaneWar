@@ -13,7 +13,19 @@ import com.smart.control.planewar.R;
 public class BigEnemyPlane extends EnemyPlane {
 
     @Override
+    protected void init() {
+        super.init();
+        mLifeLeft = 5;
+    }
+
+    @Override
     protected Bitmap getElementIcon() {
         return BitmapFactory.decodeResource(getResources(), R.mipmap.big);
+    }
+
+    @Override
+    public void onRecycleCleanData() {
+        super.onRecycleCleanData();
+        mLifeLeft = 5;
     }
 }

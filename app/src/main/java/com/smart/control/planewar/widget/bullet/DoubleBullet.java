@@ -3,7 +3,7 @@ package com.smart.control.planewar.widget.bullet;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.smart.control.planewar.Config;
+import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 
 /**
@@ -16,7 +16,7 @@ public class DoubleBullet extends Bullet {
     @Override
     protected void init() {
         super.init();
-        mSpeed = Config.ENEMY_SPEED_FAST;
+        mSpeed = PlaneConfig.ENEMY_SPEED_FAST;
     }
 
     @Override

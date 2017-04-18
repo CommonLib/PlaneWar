@@ -1,13 +1,16 @@
 package com.smart.control.planewar.widget;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.smart.control.planewar.Config;
+import com.smart.control.planewar.PlaneConfig;
+import com.smart.control.planewar.OperateCalculateManager;
+import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.base.RecycleFactory;
 import com.smart.control.planewar.widget.plane.BigEnemyPlane;
@@ -34,7 +37,9 @@ public class GameView extends FrameLayout {
     private float mLastY;
     private BattleFieldView mBattleFieldView;
     private Random mRandom;
-    public static boolean isGameContinue = true;
+    public volatile static boolean isGameContinue = false;
+    private ShootLoop mShootRunnable;
+    private EnemyLoop mEnemyRunnable;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -154,11 +159,11 @@ public class GameView extends FrameLayout {
         //根据随机数刷新敌机
         int randomNum = mRandom.nextInt(100);
         EnemyPlane enemyPlane;
-        if (randomNum >= 0 && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE) {
+        if (randomNum >= 0 && randomNum < PlaneConfig.VALUE_LITTLE_ENEMY_PLANE) {
             //刷新小飞机
             enemyPlane = RecycleFactory.getInstance().getRecycleInstance(LittleEnemyPlane.class);
-        } else if (randomNum >= Config.VALUE_LITTLE_ENEMY_PLANE
-                && randomNum < Config.VALUE_LITTLE_ENEMY_PLANE + Config.VALUE_NORMAL_ENEMY_PANE) {
+        } else if (randomNum >= PlaneConfig.VALUE_LITTLE_ENEMY_PLANE
+                && randomNum < PlaneConfig.VALUE_LITTLE_ENEMY_PLANE + PlaneConfig.VALUE_NORMAL_ENEMY_PANE) {
             //刷新中型飞机
             enemyPlane = RecycleFactory.getInstance().getRecycleInstance(NormalEnemyPlane.class);
         } else {
@@ -167,14 +172,76 @@ public class GameView extends FrameLayout {
         }
         drawEnemyPlane(enemyPlane);
         int startX = mRandom.nextInt(mParentWidth);
-        enemyPlane.fire(startX, 50, startX, mParentHeight, 0 - Config.ENEMY_SPEED_SLOW);
+        enemyPlane.fire(startX, -50, startX, mParentHeight, 0 - PlaneConfig.ENEMY_SPEED_SLOW);
     }
 
     private void drawEnemyPlane(EnemyPlane plane) {
         ViewDrawManager.getInstance().drawEnemyPlane(plane);
     }
 
-    public void startGame() {
-        mBattleFieldView.startDraw();
+    public void initGame() {
+        mShootRunnable = new ShootLoop();
+        mEnemyRunnable = new EnemyLoop();
+
+        mBattleFieldView.getDrawThread().start();
+        OperateCalculateManager.getInstance().getCalculateThread().start();
+        new Thread(mEnemyRunnable).start();
+        new Thread(mShootRunnable).start();
+    }
+
+    public boolean isGamePlaying(){
+        return isGameContinue;
+    }
+
+    public void pauseGame(){
+        isGameContinue = false;
+
+    }
+
+    public void startGame(){
+        mBattleFieldView.setBackgroundResource(R.mipmap.bg);
+        ViewDrawManager.getInstance().drawPlane(mFightPlane);
+        synchronized (GameView.class){
+            isGameContinue = true;
+            GameView.class.notifyAll();
+        }
+    }
+
+    public class ShootLoop implements Runnable {
+        @Override
+        public void run() {
+            while (true){
+                if(!GameView.isGameContinue){
+                    try {
+                        synchronized(GameView.class) {
+                            GameView.class.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mFightPlane.shootBullet();
+                SystemClock.sleep(mFightPlane.attackInterval);
+            }
+        }
+    }
+
+    public class EnemyLoop implements Runnable {
+        @Override
+        public void run() {
+            while (true){
+                if(!GameView.isGameContinue){
+                    try {
+                        synchronized(GameView.class) {
+                            GameView.class.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                refreshEnemy();
+                SystemClock.sleep(PlaneConfig.ENEMY_REFRESH_INTERVAL);
+            }
+        }
     }
 }

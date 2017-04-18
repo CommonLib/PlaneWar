@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,12 +10,18 @@
     <com.smart.control.planewar.widget.GameView
         android:id="@+id/plane_war"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-    </com.smart.control.planewar.widget.GameView>
-    <Button
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
         android:id="@+id/shoot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="发射子弹"/>
-</LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle_outline_black"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    </FrameLayout>
+</FrameLayout>

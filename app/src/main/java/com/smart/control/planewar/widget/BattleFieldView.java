@@ -1,16 +1,20 @@
 package com.smart.control.planewar.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.SystemClock;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.smart.control.planewar.Config;
+import com.smart.control.planewar.PlaneApplication;
+import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
@@ -18,6 +22,8 @@ import com.smart.control.planewar.widget.plane.EnemyPlane;
 import com.smart.control.planewar.widget.plane.Plane;
 
 import java.util.ArrayList;
+
+import static com.smart.control.planewar.R.mipmap.bg;
 
 /**
  * Created by byang059 on 11/24/16.
@@ -27,6 +33,10 @@ import java.util.ArrayList;
 public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Paint mPaint;
+    private int mCanvasWidth;
+    private int mCanvasHeight;
+    private Bitmap mScreenShot;
+
 
     public BattleFieldView(Context context) {
         super(context);
@@ -35,14 +45,14 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
         holder.addCallback(this);
         //        setZOrderOnTop(true);
         //        getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        myThread = new DrawThread(holder);//创建一个绘图线程
-        setBackgroundResource(R.mipmap.bg);
+        mDrawThread = new DrawThread(holder);//创建一个绘图线程
+        setBackgroundResource(bg);
         setZOrderOnTop(true);//使surfaceview放到最顶层
         getHolder().setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
     }
 
     private SurfaceHolder holder;
-    private DrawThread myThread;
+    private DrawThread mDrawThread;
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -53,7 +63,9 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-
+        if(mScreenShot != null){
+            setBackground(new BitmapDrawable(mScreenShot));
+        }
     }
 
     @Override
@@ -100,15 +112,15 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             //bug ui and data always read data, sync thread issue.
-            if(!bullet.isHit()){
-                canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY, mPaint);
+            if (!bullet.isHit()) {
+                canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY,
+                        mPaint);
             }
         }
     }
 
-    public void startDraw() {
-        GameView.isGameContinue = true;
-        myThread.start();
+    public Thread getDrawThread() {
+        return mDrawThread;
     }
 
     //线程内部类
@@ -121,46 +133,44 @@ public class BattleFieldView extends SurfaceView implements SurfaceHolder.Callba
 
         @Override
         public void run() {
-            while (GameView.isGameContinue) {
+            while (true) {
+                if (!GameView.isGameContinue) {
+                    mScreenShot = saveScreenShot();
+                    try {
+                        synchronized (GameView.class) {
+                            GameView.class.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 synchronized (holder) {
                     Canvas c = holder.lockCanvas();//锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
-                    c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                    drawGame(c);
-                    holder.unlockCanvasAndPost(c);//结束锁定画图，并提交改变。
+                    if (c != null) {
+                        mCanvasWidth = c.getWidth();
+                        mCanvasHeight = c.getHeight();
+                        c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                        drawGame(c);
+                        holder.unlockCanvasAndPost(c);//结束锁定画图，并提交改变。
+                    }
                 }
-                SystemClock.sleep(Config.VIEW_INTERVAL_REFRESH);
+                SystemClock.sleep(PlaneConfig.VIEW_INTERVAL_REFRESH);
             }
         }
     }
 
-    //线程内部类
-    class CalculateThread extends Thread {
-        private SurfaceHolder holder;
-        public boolean isRun;
-
-        public CalculateThread(SurfaceHolder holder) {
-            this.holder = holder;
-            isRun = true;
+    private Bitmap saveScreenShot() {
+        if (mCanvasHeight <= 0 || mCanvasWidth <= 0) {
+            return null;
         }
-
-        @Override
-        public void run() {
-            while (isRun) {
-                Canvas c = null;
-                try {
-                    synchronized (holder) {
-                        //处理数据
-                    }
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                } finally {
-                    if (c != null) {
-                        holder.unlockCanvasAndPost(c);//结束锁定画图，并提交改变。
-
-                    }
-                }
-            }
-        }
+        Bitmap bitmap = Bitmap.createBitmap(mCanvasWidth, mCanvasHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bg = BitmapFactory
+                .decodeResource(PlaneApplication.getInstance().getResources(), R.mipmap.bg);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(bg, 0, 0, mPaint);
+        Plane plane = ViewDrawManager.getInstance().getPlane();
+        canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
+        drawGame(canvas);
+        return bitmap;
     }
 }

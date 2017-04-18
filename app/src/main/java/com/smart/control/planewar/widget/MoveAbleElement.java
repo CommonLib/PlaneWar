@@ -2,7 +2,7 @@ package com.smart.control.planewar.widget;
 
 import android.content.Context;
 
-import com.smart.control.planewar.Config;
+import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.OperateCalculateManager;
 
 /**
@@ -40,7 +40,7 @@ public abstract class MoveAbleElement extends Element {
         long currentTime = System.currentTimeMillis();
         float v = (currentTime - mLastInvokeTime) * 1.0f;
 //        Log.d("Log_text", "calculateTime+calculate diff =>" + v);
-        float diff = v /Config.DATA_INTERVAL_REFRESH;
+        float diff = v / PlaneConfig.DATA_INTERVAL_REFRESH;
 //        Log.d("Log_text", "Bullet+calculate diff =>" + diff);
         calculate(diff);
         mLastInvokeTime = currentTime;

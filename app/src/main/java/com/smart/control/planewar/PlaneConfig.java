@@ -2,7 +2,7 @@ package com.smart.control.planewar;
 
 /**
  */
-public class Config {
+public class PlaneConfig {
 
     /**
      * 飞机攻击间隔时间 单位：次/ms

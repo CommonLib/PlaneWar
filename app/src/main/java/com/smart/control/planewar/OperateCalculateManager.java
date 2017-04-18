@@ -23,7 +23,16 @@ public class OperateCalculateManager {
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (GameView.isGameContinue){
+                while (true){
+                    if(!GameView.isGameContinue){
+                        try {
+                            synchronized(GameView.class) {
+                                GameView.class.wait();
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     synchronized (manager){
                         Iterator<MoveAbleElement> iterator = mElements.iterator();
                         while (iterator.hasNext()) {
@@ -34,11 +43,14 @@ public class OperateCalculateManager {
                             }
                         }
                     }
-                    SystemClock.sleep(Config.DATA_INTERVAL_REFRESH);
+                    SystemClock.sleep(PlaneConfig.DATA_INTERVAL_REFRESH);
                 }
             }
         });
-        mThread.start();
+    }
+
+    public Thread getCalculateThread(){
+        return mThread;
     }
 
     public static OperateCalculateManager getInstance() {
