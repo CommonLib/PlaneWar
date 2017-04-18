@@ -3,6 +3,7 @@ package com.smart.control.planewar.widget.bullet;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 
@@ -21,6 +22,7 @@ public class DoubleBullet extends Bullet {
 
     @Override
     protected Bitmap getElementIcon() {
-        return BitmapFactory.decodeResource(getResources(), R.mipmap.blue_bullet);
+        return BitmapFactory.decodeResource(PlaneApplication.getInstance().getResources(), R.mipmap
+                .blue_bullet);
     }
 }

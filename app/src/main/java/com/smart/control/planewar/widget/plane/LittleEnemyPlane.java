@@ -3,6 +3,7 @@ package com.smart.control.planewar.widget.plane;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.R;
 
 /**
@@ -20,7 +21,8 @@ public class LittleEnemyPlane extends EnemyPlane {
 
     @Override
     protected Bitmap getElementIcon() {
-        return BitmapFactory.decodeResource(getResources(), R.mipmap.small);
+        return BitmapFactory.decodeResource(PlaneApplication.getInstance().getResources(), R
+                .mipmap.small);
     }
 
     @Override

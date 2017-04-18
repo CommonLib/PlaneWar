@@ -13,13 +13,11 @@ import com.smart.control.planewar.widget.MoveAbleElement;
  * 修改:
  */
 public class Bomb extends MoveAbleElement{
-    public Bomb() {
-        super(PlaneApplication.getInstance());
-    }
 
     @Override
     protected Bitmap getElementIcon() {
-        return BitmapFactory.decodeResource(getResources(), R.mipmap.bomb_award);
+        return BitmapFactory.decodeResource(PlaneApplication.getInstance().getResources(), R.mipmap
+                .bomb_award);
     }
 
     @Override

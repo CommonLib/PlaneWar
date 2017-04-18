@@ -1,9 +1,9 @@
 package com.smart.control.planewar.widget.plane;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
@@ -11,21 +11,13 @@ import com.smart.control.planewar.base.RecycleFactory;
 import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.bullet.SingleBullet;
 
-import java.util.LinkedList;
-
 /**
  * @author:dongpo 创建时间: 9/13/2016
  * 描述:战斗机
  * 修改:
  */
 public class FightPlane extends Plane {
-    public LinkedList<Bullet> mBulletQueue;
     public int attackInterval;
-    private boolean mFirstLayout = true;
-
-    public FightPlane(Context context) {
-        super(context);
-    }
 
     @Override
     public void calculate(float diff) {
@@ -43,19 +35,12 @@ public class FightPlane extends Plane {
         mSpeed = 0;
         mLifeLeft = 1;
         attackInterval = PlaneConfig.SPEED_MIDDLE;
-        mBulletQueue = new LinkedList<>();
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mLocationX = getLeft();
-                mLocationY = getTop();
-            }
-        });
     }
 
     @Override
     protected Bitmap getElementIcon() {
-        return BitmapFactory.decodeResource(getResources(), R.mipmap.plane);
+        return BitmapFactory.decodeResource(PlaneApplication.getInstance().getResources(), R
+                .mipmap.plane);
     }
 
     /**
@@ -81,13 +66,5 @@ public class FightPlane extends Plane {
 
     public void stopBullet() {
 
-    }
-
-    @Override
-    public void layout(int l, int t, int r, int b) {
-        if (mFirstLayout) {
-            super.layout(l, t, r, b);
-            mFirstLayout = false;
-        }
     }
 }

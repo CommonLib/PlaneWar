@@ -2,7 +2,6 @@ package com.smart.control.planewar.widget.plane;
 
 import android.util.Log;
 
-import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
 
@@ -12,10 +11,6 @@ import com.smart.control.planewar.widget.bullet.Bullet;
  * 修改:
  */
 public abstract class EnemyPlane extends Plane {
-
-    public EnemyPlane() {
-        super(PlaneApplication.getInstance());
-    }
 
     @Override
     public void calculate(float diff) {

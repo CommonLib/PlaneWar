@@ -1,7 +1,5 @@
 package com.smart.control.planewar.widget.plane;
 
-import android.content.Context;
-
 import com.smart.control.planewar.widget.MoveAbleElement;
 
 /**
@@ -12,7 +10,4 @@ import com.smart.control.planewar.widget.MoveAbleElement;
 public abstract class Plane extends MoveAbleElement {
     public int mLifeLeft;
 
-    public Plane(Context context) {
-        super(context);
-    }
 }

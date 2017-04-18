@@ -1,6 +1,5 @@
 package com.smart.control.planewar.widget.bullet;
 
-import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.MoveAbleElement;
 
@@ -12,10 +11,6 @@ import com.smart.control.planewar.widget.MoveAbleElement;
 public abstract class Bullet extends MoveAbleElement {
 
     protected boolean isHit;
-
-    public Bullet() {
-        super(PlaneApplication.getInstance());
-    }
 
     @Override
     public void calculate(float diff){

@@ -1,9 +1,7 @@
 package com.smart.control.planewar.widget;
 
-import android.content.Context;
-
-import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.OperateCalculateManager;
+import com.smart.control.planewar.PlaneConfig;
 
 /**
  * Created by byang059 on 11/30/16.
@@ -18,10 +16,6 @@ public abstract class MoveAbleElement extends Element {
     public float mEndY;
     public volatile boolean isOutOfScreen = false;
     public long mLastInvokeTime = 0;
-
-    public MoveAbleElement(Context context) {
-        super(context);
-    }
 
     public void fire(float startX, float startY, float endX, float endY, float speed) {
         mStartX = startX;
