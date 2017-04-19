@@ -1,7 +1,6 @@
 package com.smart.control.planewar.widget;
 
 import android.graphics.Bitmap;
-import android.graphics.Paint;
 
 import com.smart.control.planewar.base.RecycleAble;
 
@@ -16,18 +15,34 @@ public abstract class Element implements RecycleAble {
     public float mLocationY;
     public int mWidth;
     public int mHeight;
-    public Paint mPaint;
+    public boolean mClickable;
+    public boolean mLongClickable;
     public Element() {
         init();
     }
 
     protected void init(){
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLocationX = 0;
         mLocationY = 0;
         mStyleBitmap = getElementIcon();
         mWidth = mStyleBitmap.getWidth();
         mHeight = mStyleBitmap.getHeight();
+    }
+
+    public boolean isClickable() {
+        return mClickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        mClickable = clickable;
+    }
+
+    public boolean isLongClickable() {
+        return mLongClickable;
+    }
+
+    public void setLongClickable(boolean longClickable) {
+        mLongClickable = longClickable;
     }
 
     protected abstract Bitmap getElementIcon();

@@ -14,8 +14,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.smart.control.planewar.OperateCalculateManager;
 import com.smart.control.planewar.PlaneApplication;
@@ -56,9 +54,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private FightPlane mFightPlane;
     private Random mRandom;
     public volatile static boolean isGameContinue = false;
-    private ShootLoop mShootRunnable;
-    private EnemyLoop mEnemyRunnable;
-
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -157,12 +152,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public Thread getDrawThread() {
-        return mDrawThread;
-    }
-
     //线程内部类
-    class DrawThread extends Thread {
+    private class DrawThread extends Thread {
         private SurfaceHolder holder;
 
         public DrawThread(SurfaceHolder holder) {
@@ -276,21 +267,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return true;
     }
 
-    private FrameLayout.LayoutParams getBattleFiledInitParams() {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        return params;
-    }
-
-    public FightPlane getFightPlane() {
-        return mFightPlane;
-    }
-
-
-    public boolean isBulletHit() {
-        return false;
-    }
-
     public void refreshEnemy() {
         //根据随机数刷新敌机
         int randomNum = mRandom.nextInt(100);
@@ -316,8 +292,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void initGame() {
-        mShootRunnable = new ShootLoop();
-        mEnemyRunnable = new EnemyLoop();
+        ShootLoop mShootRunnable = new ShootLoop();
+        EnemyLoop mEnemyRunnable = new EnemyLoop();
 
         mDrawThread.start();
         OperateCalculateManager.getInstance().getCalculateThread().start();
@@ -332,7 +308,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void pauseGame() {
         isGameContinue = false;
-
     }
 
     public void startGame() {
