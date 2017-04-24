@@ -2,7 +2,6 @@ package com.smart.control.planewar.widget.plane;
 
 import android.util.Log;
 
-import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.widget.bullet.Bullet;
 
 /**
@@ -13,15 +12,8 @@ import com.smart.control.planewar.widget.bullet.Bullet;
 public abstract class EnemyPlane extends Plane {
 
     @Override
-    public void calculate(float diff) {
+    public void calculateDiff(float diff) {
         mLocationY = mLocationY - mSpeed * diff;
-        if (!isElementFly()) {
-//            Log.d("Log_text", "EnemyPlane+calculate out of size");
-            ViewDrawManager.getInstance().removeEnemyPlane(EnemyPlane.this);
-            isOutOfScreen = true;
-        }
-        /*Log.d("Log_text", "EnemyPlane+calculate mLocationY" + mLocationY + " speed * diff"+
-                mSpeed * diff);*/
     }
 
     public boolean isPlaneHit(Bullet bullet){
@@ -45,12 +37,13 @@ public abstract class EnemyPlane extends Plane {
         Log.d("Log_text", "EnemyPlane+isPlaneHit => onHitReduceLife => " + mLifeLeft);
     }
 
-    public boolean isPlaneCrash(){
+    @Override
+    public boolean isDestroy() {
         return mLifeLeft <= 0;
     }
 
     @Override
-    public boolean isElementFly() {
+    public boolean isElementLocationInSide() {
         //[0,100]  start 0 end 100
         return mLocationY <= mEndY;
     }

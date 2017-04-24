@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import com.smart.control.planewar.PlaneApplication;
 import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
-import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.base.RecycleFactory;
 import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.bullet.SingleBullet;
@@ -20,12 +19,12 @@ public class FightPlane extends Plane {
     public int attackInterval;
 
     @Override
-    public void calculate(float diff) {
+    public void calculateDiff(float diff) {
 
     }
 
     @Override
-    public boolean isElementFly() {
+    public boolean isElementLocationInSide() {
         return false;
     }
 
@@ -59,8 +58,6 @@ public class FightPlane extends Plane {
         float originX = mLocationX + mWidth * 0.5f;
         float originY = mLocationY - bullet.mHeight;
         bullet.fire(originX, originY, originX, 0, bullet.mSpeed);
-        //告诉View 要刷新我的子弹
-        ViewDrawManager.getInstance().drawBullet(bullet);
         return bullet;
     }
 

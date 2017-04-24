@@ -2,14 +2,12 @@ package com.smart.control.planewar.widget;
 
 import android.graphics.Bitmap;
 
-import com.smart.control.planewar.base.RecycleAble;
-
 /**
  * @author:dongpo 创建时间: 9/14/2016
  * 描述:
  * 修改:
  */
-public abstract class Element implements RecycleAble {
+public abstract class Element {
     public Bitmap mStyleBitmap;
     public float mLocationX;
     public float mLocationY;
@@ -46,4 +44,8 @@ public abstract class Element implements RecycleAble {
     }
 
     protected abstract Bitmap getElementIcon();
+
+    public boolean isDestroy(){
+        return false;
+    }
 }

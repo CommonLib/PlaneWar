@@ -2,20 +2,22 @@ package com.smart.control.planewar.widget;
 
 import com.smart.control.planewar.OperateCalculateManager;
 import com.smart.control.planewar.PlaneConfig;
+import com.smart.control.planewar.base.RecycleAble;
+import com.smart.control.planewar.base.RecycleFactory;
 
 /**
  * Created by byang059 on 11/30/16.
  */
 
-public abstract class MoveAbleElement extends Element {
+public abstract class MoveAbleElement extends Element implements RecycleAble {
 
     public float mSpeed;
     public float mStartX;
     public float mStartY;
     public float mEndX;
     public float mEndY;
-    public volatile boolean isOutOfScreen = false;
     public long mLastInvokeTime = 0;
+    public boolean mIsOutOfScreen = false;
 
     public void fire(float startX, float startY, float endX, float endY, float speed) {
         mStartX = startX;
@@ -25,40 +27,49 @@ public abstract class MoveAbleElement extends Element {
         mLocationX = mStartX;
         mLocationY = mStartY;
         mSpeed = speed;
+        setRecycle(false);
         //将初始化数据，和子弹，交给数据处理系统处理数据
         OperateCalculateManager.getInstance().startCalculate(this);
         mLastInvokeTime = System.currentTimeMillis();
     }
 
-    public void calculateTime(){
+    public void calculate(){
         long currentTime = System.currentTimeMillis();
         float v = (currentTime - mLastInvokeTime) * 1.0f;
-//        Log.d("Log_text", "calculateTime+calculate diff =>" + v);
+//        Log.d("Log_text", "calculate+calculateDiff diff =>" + v);
         float diff = v / PlaneConfig.DATA_INTERVAL_REFRESH;
-//        Log.d("Log_text", "Bullet+calculate diff =>" + diff);
-        calculate(diff);
+//        Log.d("Log_text", "Bullet+calculateDiff diff =>" + diff);
+        calculateDiff(diff);
         mLastInvokeTime = currentTime;
     }
 
     @Override
     public boolean isCanRecycle() {
-        return isOutOfScreen;
+        return mIsOutOfScreen || isDestroy();
     }
 
-    public abstract void calculate(float delayMillis);
+    public abstract void calculateDiff(float delayMillis);
 
     @Override
     public void setRecycle(boolean canRecycle) {
-        isOutOfScreen = canRecycle;
+        if(canRecycle){
+            RecycleFactory.getInstance().addElementRecycle(this);
+        }
     }
 
     @Override
     public void onRecycleCleanData() {
         mLocationY = mStartY;
         mLocationX = mStartX;
+        setRecycle(false);
     }
 
-    public abstract boolean isElementFly();
+    public boolean isOutOfScreen(){
+        mIsOutOfScreen = !isElementLocationInSide();
+        return mIsOutOfScreen;
+    }
+
+    public abstract boolean isElementLocationInSide();
 
     @Override
     public boolean equals(Object o) {
@@ -86,9 +97,6 @@ public abstract class MoveAbleElement extends Element {
         if (Float.compare(that.mEndY, mEndY) != 0) {
             return false;
         }
-        if (isOutOfScreen != that.isOutOfScreen) {
-            return false;
-        }
         return mLastInvokeTime == that.mLastInvokeTime;
 
     }
@@ -100,7 +108,6 @@ public abstract class MoveAbleElement extends Element {
         result = 31 * result + (mStartY != +0.0f ? Float.floatToIntBits(mStartY) : 0);
         result = 31 * result + (mEndX != +0.0f ? Float.floatToIntBits(mEndX) : 0);
         result = 31 * result + (mEndY != +0.0f ? Float.floatToIntBits(mEndY) : 0);
-        result = 31 * result + (isOutOfScreen ? 1 : 0);
         result = 31 * result + (int) (mLastInvokeTime ^ (mLastInvokeTime >>> 32));
         return result;
     }

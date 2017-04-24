@@ -21,7 +21,6 @@ import com.smart.control.planewar.PlaneConfig;
 import com.smart.control.planewar.R;
 import com.smart.control.planewar.ViewDrawManager;
 import com.smart.control.planewar.base.RecycleFactory;
-import com.smart.control.planewar.widget.bullet.Bullet;
 import com.smart.control.planewar.widget.plane.BigEnemyPlane;
 import com.smart.control.planewar.widget.plane.EnemyPlane;
 import com.smart.control.planewar.widget.plane.FightPlane;
@@ -79,7 +78,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 mFightPlaneHorizontalRange = mParentWidth - mFightPlane.mWidth;
                 mFightPlaneVerticalRange = mParentHeight - mFightPlane.mHeight;
                 mFightPlane.mLocationX = mFightPlaneHorizontalRange / 2;
-                mFightPlane.mLocationY = mFightPlaneVerticalRange;
+                mFightPlane.mLocationY = mFightPlaneVerticalRange * 0.9f;
             }
         });
     }
@@ -111,43 +110,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void drawGame(Canvas canvas) {
         Plane plane = ViewDrawManager.getInstance().getPlane();
         canvas.drawBitmap(plane.mStyleBitmap, plane.mLocationX, plane.mLocationY, mPaint);
-        ArrayList<EnemyPlane> enemyPlanes = ViewDrawManager.getInstance().getEnemyPlanes();
-        ArrayList<Bullet> bullets = ViewDrawManager.getInstance().getBullets();
-        for (int i = 0; i < enemyPlanes.size(); i++) {
-            EnemyPlane enemyPlane = enemyPlanes.get(i);
-            boolean isCrash = false;
-            for (int j = 0; j < bullets.size(); j++) {
-                Bullet bullet = bullets.get(j);
-                if (!bullet.isHit()) {
-                    boolean planeHit = enemyPlane.isPlaneHit(bullet);
-                    //                Log.d("Log_text", "BattleFieldView+drawGame  planeHit=> " + planeHit);
-                    if (planeHit) {
-                        enemyPlane.onHitReduceLife();
-                        bullet.setHit(true);
-                        bullets.remove(bullet);
-                        if (enemyPlane.isPlaneCrash()) {
-                            isCrash = true;
-                            enemyPlanes.remove(enemyPlane);
-                            i--;
-                            break;
-                        }
-                    }
-                }
-            }
 
-            if (!isCrash) {
-                //bug ui and data always read data, sync thread issue.
-                canvas.drawBitmap(enemyPlane.mStyleBitmap, enemyPlane.mLocationX,
-                        enemyPlane.mLocationY, mPaint);
-            }
-        }
+        drawElements(canvas, OperateCalculateManager.getInstance().getEnemyPlanes());
+        drawElements(canvas, OperateCalculateManager.getInstance().getBullets());
+    }
 
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet bullet = bullets.get(i);
-            //bug ui and data always read data, sync thread issue.
-            if (!bullet.isHit()) {
-                canvas.drawBitmap(bullet.mStyleBitmap, bullet.mLocationX, bullet.mLocationY,
+    private void drawElements(Canvas canvas, ArrayList<? extends Element> elements) {
+        for (int i = 0; i < elements.size(); i++) {
+            Element element = elements.get(i);
+            if (!element.isDestroy()) {
+                canvas.drawBitmap(element.mStyleBitmap, element.mLocationX, element.mLocationY,
                         mPaint);
+
             }
         }
     }
@@ -282,13 +256,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             //刷新大型飞机
             enemyPlane = RecycleFactory.getInstance().getRecycleInstance(BigEnemyPlane.class);
         }
-        drawEnemyPlane(enemyPlane);
         int startX = mRandom.nextInt(mParentWidth);
         enemyPlane.fire(startX, -50, startX, mParentHeight, 0 - PlaneConfig.ENEMY_SPEED_SLOW);
-    }
-
-    private void drawEnemyPlane(EnemyPlane plane) {
-        ViewDrawManager.getInstance().drawEnemyPlane(plane);
     }
 
     public void initGame() {

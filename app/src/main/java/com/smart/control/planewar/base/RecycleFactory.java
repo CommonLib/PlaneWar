@@ -2,6 +2,9 @@ package com.smart.control.planewar.base;
 
 import android.support.annotation.Nullable;
 
+import com.smart.control.planewar.utils.LogUtil;
+import com.smart.control.planewar.widget.MoveAbleElement;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -28,20 +31,35 @@ public class RecycleFactory {
             queue = new LinkedList<>();
             recycleMap.put(key, queue);
         }
+        RecycleAble recycleObj = null;
 
-        RecycleAble recycleObj = queue.peekLast();
-        if (recycleObj != null && recycleObj.isCanRecycle()) {
-            queue.removeLast();
-            recycleObj.setRecycle(false);
-            recycleObj.onRecycleCleanData();
-//            Log.d("Log_text", "getRecycleInstance => "+ key +" =>cache recycleObj");
-        } else {
-//            Log.d("Log_text", "getRecycleInstance => "+ key +" =>new recycleObj");
+        while (queue.peekLast() != null){
+            recycleObj = queue.pollLast();
+            if(recycleObj.isCanRecycle()){
+                recycleObj.setRecycle(false);
+                recycleObj.onRecycleCleanData();
+                break;
+                //            LogUtil.d("getRecycleInstance => "+ key +" =>cache recycleObj");
+            }
+        }
+
+        if (recycleObj == null) {
+            LogUtil.d("getRecycleInstance => "+ key +" =>new recycleObj");
             recycleObj = getNewRecycleObj(tClass, key);
         }
-        queue.addFirst(recycleObj);
 
         return (T) recycleObj;
+    }
+
+    public void addElementRecycle(MoveAbleElement element){
+        String key = element.getClass().getName();
+        LinkedList<RecycleAble> queue = recycleMap.get(key);
+
+        if(queue == null){
+            queue = new LinkedList<>();
+            recycleMap.put(key, queue);
+        }
+        queue.addFirst(element);
     }
 
     @Nullable

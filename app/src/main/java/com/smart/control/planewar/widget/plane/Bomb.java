@@ -21,12 +21,13 @@ public class Bomb extends MoveAbleElement{
     }
 
     @Override
-    public void calculate(float delayMillis) {
+    public void calculateDiff(float delayMillis) {
 
     }
 
     @Override
-    public boolean isElementFly() {
+    public boolean isElementLocationInSide() {
         return false;
     }
+
 }
